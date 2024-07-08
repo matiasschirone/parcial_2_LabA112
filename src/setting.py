@@ -31,7 +31,7 @@ WHITE = (226, 225, 225)
 
 SIZE_PLAYER = (300, 300, 200, 100)
 
-
+score = 0
 max_score = 0
 game_over = False
 

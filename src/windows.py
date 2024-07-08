@@ -19,7 +19,7 @@ def pantalla_inicio()-> None:
         
     
     
-def pantalla_game_over()-> None:
+def pantalla_game_over():
     
     if game_over:
         pygame.mixer.music.stop()

@@ -6,12 +6,9 @@ from player import *
 from enemis import *
 from coin import *
 from platforms import *
-from windows import *
+from projectil import *
 
-
-
-
-    
+   
 # Inicializar Pygame
 pygame.init()
 
@@ -28,15 +25,9 @@ pygame.display.set_caption("BEES'S GAME")
 background = pygame.image.load(r'src/assets/Grasslands.png').convert()
 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
 
-
-
-
-
 #musica de fondo
 pygame.mixer.music.load(r"src\assets\musica_fondo.mp3")
 pygame.mixer.music.set_volume(0.1)
-
-
 
 #cargo imagenes
 sound_on = pygame.image.load(r'src\assets\on.png')
@@ -45,78 +36,39 @@ sound_on = pygame.transform.scale(sound_on, (30, 30))
 sound_off = pygame.image.load(r'src\assets\R.png')
 sound_off = pygame.transform.scale(sound_off, (40, 40))
 
-
-
-
-
-
-
 from config import *
 
 
+def pantalla_inicio()-> None:
+    #pantalla inicio
+    background_comienzo = pygame.image.load(r'src\assets\scene-with-bees-flying-around-beehive-illustration-vector.jpg').convert()
+    background_comienzo = pygame.transform.scale(background_comienzo, (WIDTH, HEIGHT))
+    screen.blit(background_comienzo, ORIGIN)
+    mostrar_texto(screen,"BEE'S", fuente, SCREEN_CENTER, BLACK)
+    mostrar_texto(screen,"PULSA RCTRL PARA COMENZAR", fuente, MESSAGE_STAR_POS, WHITE)
 
-def handle_shooting(player: dict)-> None:
-    """
-    Maneja el disparo de proyectiles por parte del jugador.
+    continuar = True
+    pygame.display.flip()
+    wait_user(pygame.K_RCTRL)
+        
 
-    Args:
-        player (dict): Diccionario con los atributos del jugador.
-    """
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LALT]:
-        if len(player['projectiles']) == 0:
-            new_projectile = {'x': player['x'], 'y': player['y'], 'speed': 10, 'image': proyectil_img}  # Utiliza la imagen del proyectil
-            player['projectiles'].append(new_projectile)
-
-def update_projectiles(player: dict, enemies: list)-> None:
-    """
-    Actualiza la posición de los proyectiles y maneja las colisiones con enemigos.
-
-    Args:
-        player (dict): Diccionario con los atributos del jugador.
-        enemies (list): Lista de diccionarios con los atributos de los enemigos.
-    """
-    projectiles_copy = player['projectiles'].copy()
-    enemies_copy = enemies.copy()
+def pantalla_game_over():
     
-    for projectile in projectiles_copy:
-        projectile['x'] += projectile['speed']
-        projectile_rect = pygame.Rect(projectile['x'], projectile['y'], 15, 10)
-        
-        for enemy in enemies_copy:
-            enemy_rect = pygame.Rect(enemy['x'], enemy['y'], enemy['width'], enemy['height'])
-            if projectile_rect.colliderect(enemy_rect):
-                piedrazo_abeja_sound.play()
-                player['projectiles'].remove(projectile)
-                enemies.remove(enemy)
-        
-        if projectile['x'] > WIDTH:
-            player['projectiles'].remove(projectile)
-
-# Función para dibujar los proyectiles
-def draw_projectiles(player: dict)-> None:
-    """
-    Dibuja los proyectiles en la pantalla.
-
-    Args:
-        player (dict): Diccionario con los atributos del jugador.
-    """
-    for projectile in player['projectiles']:
-        screen.blit(projectile['image'], (projectile['x'], projectile['y']))
-        
-
-
-
-
-
-
-
+    if game_over:
+        pygame.mixer.music.stop()
+        game_over_sound.play()
+        background_game_over = pygame.image.load(r'src\assets\game_over3.png').convert()
+        background_game_over = pygame.transform.scale(background_game_over, (WIDTH, HEIGHT))
+        screen.blit(background_game_over, ORIGIN)
+        mostrar_texto(screen, f"SCORE: {score}", fuente, LAST_SCORE_POS, WHITE)
+        mostrar_texto(screen, f"MAXIMO SCORE: {max_score}", fuente, MAX_SCORE_POS, WHITE)
+        mostrar_texto(screen, "PULSA RCTRL PARA COMENZAR", fuente, MESSAGE_STAR_POS, WHITE)
+        pygame.display.flip()
+        wait_user(pygame.K_RCTRL)  # Espera a que el usuario presione RCTRL para cerrar
 
 
 TIMERCOIN =pygame.USEREVENT + 1
 GAMETIMEOUT = pygame.USEREVENT +2
-
-
 
 start_time = pygame.time.get_ticks()
 
@@ -203,13 +155,10 @@ while True:
                 is_running = False
                 start_time = pygame.time.get_ticks()
                     
-            
-                    
         screen.blit(background, ORIGIN)
         
         score = update_coins(player, coins, score)
-        
-        
+     
         mostrar_texto(screen, f"SCORE: {score}", fuente, SCORE_POS, BLACK)
         
         mostrar_texto(screen, f"Tiempo: {time_seconds}", fuente, TIME_POS, BLACK)
@@ -219,13 +168,11 @@ while True:
         else:
             screen.blit(sound_off, (10, 10))
 
-        
         # handle_input(player)
         update_player(player, platforms)
         update_enemies(enemies, platforms, player)
         update_projectiles(player, enemies)
-        
-
+   
         draw_platforms(platforms, get_mode())
         draw_enemies(enemies, get_mode())
         draw_player(player, get_mode())
@@ -233,12 +180,9 @@ while True:
         draw_coins(coins)
         num_vidas = player["lives"]
         draw_vidas(screen, vidas_imgs, num_vidas)
-       
-        
-        
         
         pygame.display.flip()
-        
+  
     #pantalla game over
     if score > max_score:
             max_score = score
