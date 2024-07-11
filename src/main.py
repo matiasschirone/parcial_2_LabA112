@@ -41,7 +41,12 @@ from config import *
 
 
 def pantalla_inicio()-> None:
-    #pantalla inicio
+    """
+    Muestra la pantalla de inicio del juego y espera a que el usuario presione la tecla Right Control (RCTRL) para continuar.
+
+    Return:
+    None
+    """
     background_comienzo = pygame.image.load(r'src\assets\scene-with-bees-flying-around-beehive-illustration-vector.jpg').convert()
     background_comienzo = pygame.transform.scale(background_comienzo, (WIDTH, HEIGHT))
     screen.blit(background_comienzo, ORIGIN)
@@ -53,8 +58,13 @@ def pantalla_inicio()-> None:
     wait_user(pygame.K_RCTRL)
         
 
-def pantalla_game_over():
-    
+def pantalla_game_over()-> None:
+    """
+    Muestra la pantalla de game over si el juego ha terminado y espera a que el usuario presione la tecla Right Control (RCTRL) para reiniciar.
+
+    Return:
+    None
+    """
     if game_over:
         pygame.mixer.music.stop()
         game_over_sound.play()
@@ -65,7 +75,7 @@ def pantalla_game_over():
         mostrar_texto(screen, f"MAXIMO SCORE: {max_score}", fuente, MAX_SCORE_POS, WHITE)
         mostrar_texto(screen, "PULSA RCTRL PARA COMENZAR", fuente, MESSAGE_STAR_POS, WHITE)
         pygame.display.flip()
-        wait_user(pygame.K_RCTRL)  # Espera a que el usuario presione RCTRL para cerrar
+        wait_user(pygame.K_RCTRL)  
 
 
 TIMERCOIN =pygame.USEREVENT + 1
@@ -178,7 +188,6 @@ while True:
         else:
             screen.blit(sound_off, (10, 10))
 
-        # handle_input(player)
         update_player(player, platforms)
         update_enemies(enemies, platforms, player, vidas_imgs)
         update_projectiles(player, enemies)
@@ -208,6 +217,7 @@ while True:
     puntajes = leer_puntajes()
     ordenar_lista_datos(puntajes, 'score', ascendente=False)
     guardar_puntajes_ordenados(puntajes)
+    convertir_csv_a_json()
     pantalla_game_over()
 
 salir_juego()

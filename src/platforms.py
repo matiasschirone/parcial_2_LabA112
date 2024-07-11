@@ -15,11 +15,11 @@ def draw_platforms(platforms: list, debug_mode: bool)->None:
     for platform in platforms:
         if debug_mode:
             pygame.draw.rect(screen, RED, platform, 4)
-            pygame.draw.rect(screen, YELLOW, platform, 4)
+            sprite_width = platform_sprite.get_width()
+            for x in range(platform.left, platform.right, sprite_width):
+                screen.blit(platform_sprite, (x, platform.top))
         else:
             sprite_width = platform_sprite.get_width()
-
-            # Dibuja el sprite en toda la longitud de la plataforma
             for x in range(platform.left, platform.right, sprite_width):
                 screen.blit(platform_sprite, (x, platform.top))
 

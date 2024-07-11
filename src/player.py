@@ -22,12 +22,8 @@ def initialize_player()-> dict:
         'pierde_vida': pierde_vida
     }
 
-    # Reescala las imágenes de las animaciones a 50x50
-    for key in animations:
-        frames = animations[key]
-        for i in range(len(frames)):
-            frames[i] = pygame.transform.scale(frames[i], (40, 50))
-
+    reescalar_imagenes(animations, 50, 50)
+    
     return {
         'x': WIDTH // 2,
         'y': HEIGHT - 50,
@@ -49,8 +45,6 @@ def initialize_player()-> dict:
         'direction' : 1
     }
 
-
-    
 
 # Función para actualizar la lógica del jugador
 def update_player(player: dict, platforms: list)-> None:
@@ -117,7 +111,7 @@ def draw_player(player: dict, debug_mode)-> None:
        
 
 
-def draw_vidas(screen: pygame.Surface, vidas_imgs: list, vidas: int):
+def draw_vidas(screen: pygame.Surface, vidas_imgs: list, vidas: int)->None:
     """
     Dibuja las vidas del jugador en la pantalla.
 

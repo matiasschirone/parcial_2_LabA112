@@ -2,7 +2,8 @@ import pygame
 import csv
 from setting import *
 from config import *
-
+import csv
+import json
 
 DEBUG = False
 
@@ -86,7 +87,16 @@ def get_path_actual(nombre_archivo):
     directorio_actual = os.path.dirname(__file__)
     return os.path.join(directorio_actual, nombre_archivo)
 
-def guardar_puntajes(scores):
+def guardar_puntajes(scores: list)->None:
+    """
+    Guarda los puntajes y las vidas utilizadas en un archivo CSV.
+
+    Parámetros:
+    scores (list): Una lista que contiene dos elementos: el puntaje (score) y las vidas utilizadas.
+
+    Return:
+    None
+    """
     try:
         with open(get_path_actual('puntajes.csv'),'a', encoding="utf-8") as file:
             headers = ['score', 'vidas utilizadas']
@@ -102,6 +112,15 @@ def guardar_puntajes(scores):
         print("Error al guardar el puntaje.")
         
 def leer_puntajes() -> list:
+    """
+    Lee los puntajes guardados desde un archivo CSV y los devuelve como una lista de diccionarios.
+
+    Parámetros:
+    None
+
+    Returns:
+    list: Una lista de diccionarios donde cada diccionario contiene las claves 'score' y 'vidas utilizadas'.
+    """
     puntajes = []
     try:
         with open(get_path_actual('puntajes.csv'),'r', encoding="utf-8") as file:
@@ -113,7 +132,17 @@ def leer_puntajes() -> list:
     
     return puntajes
 
-def guardar_puntajes_ordenados(puntajes):
+def guardar_puntajes_ordenados(puntajes: list):
+    """
+    Guarda puntajes ordenados en un archivo CSV.
+
+    Parámetros:
+    puntajes (list): Una lista de diccionarios donde cada diccionario contiene las claves 'score' y 'vidas utilizadas'.
+
+    Returns:
+    None
+    """
+    ordenar_lista_datos(puntajes, 'score', ascendente=False)
     try:
         with open(get_path_actual('puntajes_ordenados.csv'),'w', encoding="utf-8") as file:
             headers = ['score', 'vidas utilizadas']
@@ -141,7 +170,42 @@ def guardar_puntajes_ordenados(puntajes):
         print("Puntajes ordenados guardados exitosamente.")
     except IOError:
         print("Error al guardar los puntajes ordenados.")
-            
+
+def guardar_puntajes_json(puntajes: list)->None:
+    """
+    Guarda puntajes en formato JSON en un archivo.
+
+    Parámetros:
+    puntajes (list): Una lista de diccionarios donde cada diccionario contiene información de puntajes.
+
+    Returns:
+    None
+    """
+    ordenar_lista_datos(puntajes, 'score', ascendente=False)
+    with open(get_path_actual('puntajes_ordenados.json'), 'w') as jsonfile:
+        json.dump(puntajes, jsonfile, indent=4)
+
+def convertir_csv_a_json()->None:
+    """
+    Lee los puntajes desde un archivo CSV y los guarda en un archivo JSON.
+    """
+    puntajes = leer_puntajes()
+    guardar_puntajes_json(puntajes)  
+    
+def leer_puntajes_json()-> list:
+    """
+    Lee puntajes desde un archivo JSON y los devuelve como una lista de diccionarios.
+
+    Return:
+    list: Una lista de diccionarios que contiene los puntajes leídos desde el archivo JSON.
+          Si hay un error al leer el archivo, devuelve una lista vacía.
+    """
+    try:
+        with open(get_path_actual('puntajes_ordenados.json'), 'r') as jsonfile:
+            return json.load(jsonfile)
+    except IOError:
+        print("Error al leer el archivo JSON.")
+        return []         
 
 def reset_player(player: dict)-> None:
     """

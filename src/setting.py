@@ -29,7 +29,7 @@ YELLOW = (255, 255, 0)
 BLACK = (0, 0, 0)
 WHITE = (226, 225, 225)
 
-SIZE_PLAYER = (300, 300, 200, 100)
+SIZE_PLAYER = (50 , 50)
 
 score = 0
 max_score = 0

@@ -6,9 +6,6 @@ from config import *
 from sys import exit
 from colision import handle_collisions
 
-
-
-# Redimensionar sprites de enemigos
 animaciones_enemigos = {'left': enemi_izq, 'right': enemi_dere}
 reescalar_imagenes(animaciones_enemigos, 40, 30)
 
@@ -98,6 +95,9 @@ def draw_enemies(enemies: list, debug_mode: bool)-> None:
     for enemy in enemies:
         if debug_mode:
             pygame.draw.rect(screen, RED, (enemy['x'], enemy['y'], enemy['width'], enemy['height']), 3)
+            sprite_list = animaciones_enemigos[enemy['direction']]
+            sprite = sprite_list[enemy['sprite_index']]
+            screen.blit(sprite, (enemy['x'], enemy['y']))
         else:
             sprite_list = animaciones_enemigos[enemy['direction']]
             sprite = sprite_list[enemy['sprite_index']]
