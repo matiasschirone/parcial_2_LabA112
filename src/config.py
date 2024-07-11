@@ -59,3 +59,5 @@ def initialize_vidas(num_vidas: int)-> list:
     vida_img = pygame.image.load(r'src/assets/v0.png').convert_alpha()
     vida_img = pygame.transform.scale(vida_img, (30, 30))
     return [vida_img for _ in range(num_vidas)]
+
+

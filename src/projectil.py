@@ -10,11 +10,8 @@ def handle_shooting(player: dict)-> None:
     Args:
         player (dict): Diccionario con los atributos del jugador.
     """
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LALT]:
-        if len(player['projectiles']) == 0:
-            new_projectile = {'x': player['x'], 'y': player['y'], 'speed': 10, 'image': proyectil_img}  # Utiliza la imagen del proyectil
-            player['projectiles'].append(new_projectile)
+    new_projectile = {'x': player['x'], 'y': player['y'], 'speed': 10 * player['direction'], 'image': proyectil_img} 
+    player['projectiles'].append(new_projectile)
 
 def update_projectiles(player: dict, enemies: list)-> None:
     """

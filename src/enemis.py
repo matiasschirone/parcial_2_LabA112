@@ -12,7 +12,7 @@ from colision import handle_collisions
 animaciones_enemigos = {'left': enemi_izq, 'right': enemi_dere}
 reescalar_imagenes(animaciones_enemigos, 40, 30)
 
-def initialize_enemies(platforms: list)-> list:
+def initialize_enemies(nums_enemi, platforms: list)-> list:
     """
     Inicializa los atributos de los enemigos.
 
@@ -20,7 +20,7 @@ def initialize_enemies(platforms: list)-> list:
         list: Lista de diccionarios con los atributos de los enemigos.
     """
     enemies = []
-    for _ in range(6):
+    for _ in range(nums_enemi):
         while True:
             x = random.randint(0, WIDTH - 30)
             y = random.randint(50, HEIGHT - 200)
@@ -41,14 +41,10 @@ def initialize_enemies(platforms: list)-> list:
                     'sprite_index': 0
                 })
                 break
-    return enemies
-
-
-
-vidas_imgs = initialize_vidas(3)  
+    return enemies 
            
             
-def update_enemies(enemies: list, platforms: list, player: dict)-> None:
+def update_enemies(enemies: list, platforms: list, player: dict, vidas_imgs: list)-> None:
     """
     Actualiza la posición y el comportamiento de los enemigos.
 
@@ -77,7 +73,7 @@ def update_enemies(enemies: list, platforms: list, player: dict)-> None:
                     enemy['speed'] *= -1
                     enemy['direction'] = 'right'
         
-        handle_collisions(player, enemies, reset_player)
+        handle_collisions(player, enemies, reset_player, vidas_imgs)
         
         for other_enemy in enemies:
             if other_enemy != enemy:
@@ -106,3 +102,7 @@ def draw_enemies(enemies: list, debug_mode: bool)-> None:
             sprite_list = animaciones_enemigos[enemy['direction']]
             sprite = sprite_list[enemy['sprite_index']]
             screen.blit(sprite, (enemy['x'], enemy['y']))
+            
+def handle_bee_timer(enemi, platforms):
+    new_bee = initialize_enemies(1, platforms)  
+    enemi.append(new_bee[0])

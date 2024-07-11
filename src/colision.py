@@ -2,8 +2,11 @@ import pygame
 from setting import *
 from config import *
 from modo import *
+from player import *
 
-def handle_collisions(player: dict, enemies: list, reset_player)-> None:
+
+ 
+def handle_collisions(player: dict, enemies: list, reset_player, vidas_imgs: list)-> None:
     """
     Maneja las colisiones entre el jugador y los enemigos.
 
@@ -38,5 +41,4 @@ def handle_collisions(player: dict, enemies: list, reset_player)-> None:
         
             reset_player(player)
             enemies.remove(enemy)
-            
-vidas_imgs = initialize_vidas(3)  
+

@@ -45,7 +45,8 @@ def initialize_player()-> dict:
         'animations': animations,
         'current_animation': 'quieto_derecha',
         'animation_index': 0,
-        'animation_speed': 0.2
+        'animation_speed': 0.2,
+        'direction' : 1
     }
 
 
@@ -113,9 +114,7 @@ def draw_player(player: dict, debug_mode)-> None:
 
     if debug_mode:
         pygame.draw.rect(screen, RED, (x, y, player['width'], player['height']), 2)
-   
-
-vidas_imgs = initialize_vidas(3)          
+       
 
 
 def draw_vidas(screen: pygame.Surface, vidas_imgs: list, vidas: int):

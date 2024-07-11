@@ -81,38 +81,66 @@ def ordenar_lista_datos(lista: list, campo: str, ascendente: bool = True) -> Non
             if (ascendente and int(lista[i][campo]) > int(lista[j][campo])) or (not ascendente and int(lista[i][campo]) < int(lista[j][campo])):
                 swap_lista(lista,i,j)
 
-def guardar_puntajes(scores, filename='scores.csv')-> None:
-    """
-    Guarda los puntajes en un archivo CSV.
+def get_path_actual(nombre_archivo):
+    import os
+    directorio_actual = os.path.dirname(__file__)
+    return os.path.join(directorio_actual, nombre_archivo)
 
-    Args:
-        scores (list): Lista con los puntajes a guardar.
-        filename (str, optional): Nombre del archivo CSV. Default 'scores.csv'.
-    """
+def guardar_puntajes(scores):
     try:
-        with open(filename, 'r', encoding="utf-8") as archivo:
-            reader = csv.reader(archivo)
-            current_scores = list(reader)
-    except FileNotFoundError:
-        current_scores = []
+        with open(get_path_actual('puntajes.csv'),'a', encoding="utf-8") as file:
+            headers = ['score', 'vidas utilizadas']
+            writer = csv.DictWriter(file, fieldnames=headers)
 
-    current_scores.append(scores)
-    
-    ordenar_lista_datos(current_scores, campo=0, ascendente=False)
-    
-    current_scores = current_scores[:3]
-    
-    # Convierte el nombre a mayúsculas como lo hiciste antes
-    for i in range(len(current_scores)):
-        current_scores[i][0] = current_scores[i][0].upper()
+            if file.tell() == 0:
+                writer.writeheader()
 
-    # Guarda los puntajes actualizados en el archivo CSV
-    with open(filename, mode='w', encoding= "utf-8") as archivo:
-        encabezado = ",".join(current_scores[0]) + "\n"
-        archivo.write(encabezado)
-        for persona in current_scores:
-            linea = ",".join(persona) + "\n"
-            archivo.write(linea)
+            writer.writerow({'score': scores[0], 'vidas utilizadas': scores[1]})
+                
+        print("Puntaje guardado exitosamente.")
+    except IOError:
+        print("Error al guardar el puntaje.")
+        
+def leer_puntajes() -> list:
+    puntajes = []
+    try:
+        with open(get_path_actual('puntajes.csv'),'r', encoding="utf-8") as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                puntajes.append({'score': row['score'], 'vidas utilizadas': row['vidas utilizadas']})
+    except IOError:
+        print("Error al leer los puntajes.")
+    
+    return puntajes
+
+def guardar_puntajes_ordenados(puntajes):
+    try:
+        with open(get_path_actual('puntajes_ordenados.csv'),'w', encoding="utf-8") as file:
+            headers = ['score', 'vidas utilizadas']
+            writer = csv.DictWriter(file, fieldnames=headers)
+
+            # Escribir encabezado como una línea separada
+            encabezado = ",".join(headers) + "\n"
+            file.write(encabezado)
+
+            # Escribir datos ordenados
+            for puntaje in puntajes:
+                # Convertir los valores a una lista de strings
+                values = list(puntaje.values())
+                formatted_values = []
+                for value in values:
+                    if isinstance(value, (int, float)):
+                        formatted_values.append(str(value))
+                    else:
+                        formatted_values.append(value)
+                
+                # Escribir la línea en el archivo
+                linea = ",".join(formatted_values) + "\n"
+                file.write(linea)
+                
+        print("Puntajes ordenados guardados exitosamente.")
+    except IOError:
+        print("Error al guardar los puntajes ordenados.")
             
 
 def reset_player(player: dict)-> None:
@@ -129,3 +157,8 @@ def reset_player(player: dict)-> None:
     player['on_ground'] = True
     global vidas_imgs
     vidas_imgs = initialize_vidas(player['max_lives'])
+    
+
+
+ 
+    

@@ -7,6 +7,7 @@ from enemis import *
 from coin import *
 from platforms import *
 from projectil import *
+from colision import *
 
    
 # Inicializar Pygame
@@ -69,6 +70,9 @@ def pantalla_game_over():
 
 TIMERCOIN =pygame.USEREVENT + 1
 GAMETIMEOUT = pygame.USEREVENT +2
+TIMERBEE = pygame.USEREVENT +3 
+
+
 
 start_time = pygame.time.get_ticks()
 
@@ -77,17 +81,18 @@ while True:
     pantalla_inicio()
     
     player = initialize_player()
-    
-    enemies = initialize_enemies(platforms)
+    vidas_imgs = initialize_vidas(player['max_lives'])
+    enemies = initialize_enemies(6, platforms)
    
     coins = initialize_coins(10, platforms)  
+    
         
     pygame.mixer.music.play(-1)
     playing_music = True
     
     pygame.time.set_timer(TIMERCOIN, 5000)
-    
-    pygame.time.set_timer(GAMETIMEOUT, 10000)
+    pygame.time.set_timer(TIMERBEE, 10000)
+    pygame.time.set_timer(GAMETIMEOUT, 20000)
 
     score = 0
     is_running = True
@@ -124,9 +129,11 @@ while True:
             keys = pygame.key.get_pressed()
             if keys[pygame.K_LEFT]:
                 player['speed_x'] = -5
+                player['direction'] = -1
                 player['current_animation'] = 'corre_izquierda'
             elif keys[pygame.K_RIGHT]:
                 player['speed_x'] = 5
+                player['direction'] = 1
                 player['current_animation'] = 'corre_derecha'
             else:
                 player['speed_x'] = 0
@@ -135,7 +142,7 @@ while True:
                         player['current_animation'] = 'quieto_derecha'
                     elif player['current_animation'] == 'corre_izquierda':
                         player['current_animation'] = 'quieto_izquierda'
-            
+                    
             if keys[pygame.K_SPACE] and player['on_ground']:
                 player['speed_y'] = player['jump_power']
                 player['on_ground'] = False
@@ -145,11 +152,14 @@ while True:
                     player['current_animation'] = 'salta_izquierda'
             
             if keys[pygame.K_LALT]:
-                handle_shooting(player)   
+                handle_shooting(player)      
                 
             if event.type == TIMERCOIN:
                 print("se lanzo el evento")
                 handle_coin_timer(coins, platforms)
+            if event.type == TIMERBEE:
+                print("se lanzo abeja")
+                handle_bee_timer(enemies, platforms)
             if event.type == GAMETIMEOUT:
                 game_over = True 
                 is_running = False
@@ -170,7 +180,7 @@ while True:
 
         # handle_input(player)
         update_player(player, platforms)
-        update_enemies(enemies, platforms, player)
+        update_enemies(enemies, platforms, player, vidas_imgs)
         update_projectiles(player, enemies)
    
         draw_platforms(platforms, get_mode())
@@ -182,12 +192,22 @@ while True:
         draw_vidas(screen, vidas_imgs, num_vidas)
         
         pygame.display.flip()
+        
+        if player['lives'] <= 0:
+            game_over = True
+            is_running = False
   
     #pantalla game over
-    if score > max_score:
-            max_score = score
-    scores = [str(max_score), str(player['max_lives'] - player['lives'])]
+    if game_over:
+        if score > max_score:
+                max_score = score
+        scores = [str(max_score), str(player['max_lives'] - player['lives'])]
+             
+    
     guardar_puntajes(scores)
+    puntajes = leer_puntajes()
+    ordenar_lista_datos(puntajes, 'score', ascendente=False)
+    guardar_puntajes_ordenados(puntajes)
     pantalla_game_over()
 
 salir_juego()
