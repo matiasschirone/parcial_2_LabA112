@@ -27,7 +27,7 @@ background = pygame.image.load(r'src/assets/Grasslands.png').convert()
 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
 
 #musica de fondo
-pygame.mixer.music.load(r"src\assets\musica_fondo.mp3")
+pygame.mixer.music.load(r"src\assets\kart-mario.mp3")
 pygame.mixer.music.set_volume(0.1)
 
 #cargo imagenes
